@@ -4,10 +4,12 @@ import GoogleMapReact from 'google-map-react'
 import LocationMarker from './LocationMarker'
 import LocationInfoBox from './LocationInfoBox'
 import VolcanoMarker from './VolcanoMarker'
+import IcebergeMarker from './IcebergeMarker'
 
 // define constants
 const VOLCANO = 12;
 const NATURAL_EVENT_WILDFIRE = 8;
+const ICEBERGE = 15;
 
 const Map = ({ eventData, center, zoom }) => {
     const [locationInfo, setLocationInfo] = useState(null)
@@ -26,6 +28,13 @@ const Map = ({ eventData, center, zoom }) => {
         return null
     })
 
+    const markas = eventData.map((ev, index) => {
+        if(ev.categories[0].id === ICEBERGE) {
+            return <IcebergeMarker key={index} lat={ev.geometries[0].coordinates[1]} lng={ev.geometries[0].coordinates[0]} onClick={() => setLocationInfo({ id: ev.id, title: ev.title })} />
+        }
+        return null
+    })
+
     return (
         <div className="map">
             <GoogleMapReact
@@ -35,6 +44,7 @@ const Map = ({ eventData, center, zoom }) => {
             >
                 {markers}
                 {marker}
+                {markas}
             </GoogleMapReact>
             {locationInfo && <LocationInfoBox info={locationInfo} />}
         </div>
